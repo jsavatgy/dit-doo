@@ -67,7 +67,7 @@ charToString c = [c]
 
 sampleStart = 0
 sampleSize  = 25000
-fileName = "matkustus-maan-keskipisteeseen.txt"
+fileName = "journey-to-centre-of-earth.txt"
 
 main = do
   content <- readFile fileName
