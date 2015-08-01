@@ -1,0 +1,8 @@
+#!/bin/bash
+
+echo "<meta charset=\"utf-8\">" >guide.html
+markdown guide.md >>guide.html
+firefox guide.html > /dev/null 2>&1 &
+# rm guide.html
+
+
