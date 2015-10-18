@@ -21,7 +21,7 @@ main = do
 
 Now
 
-```
+```haskell
 chks ⇒ 
 ["sinus a","inus ae","nus aes","us aest","s aestu"," aestuu","aestuum"]
 ["sinus ","inus a","nus ae","us aes","s aest"," aestu","aestuu","estuum"]
