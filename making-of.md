@@ -1,27 +1,28 @@
-<meta charset="utf-8">
-<h1>dit-doo</h1>
+# dit-doo
 
-<p>Given the last six letters of text, what will the next one be?</p>
+Given the last six letters of text, what will the next one be?
 
-<h2>Collecting chunks</h2>
+## Collecting chunks
 
-<p>Lets first collect all the chunks of length <code>[1..7]</code> in a given text.</p>
+Lets first collect all the chunks of length `[7,6..1]` from a given text.
 
-<pre><code>str = "sinus aestuum"
+```haskell
+str = "sinus aestuum"
 
 chunks n xs 
-  | n &lt;= length xs = fst (splitAt n xs) : chunks n (tail xs)
+  | n <= length xs = fst (splitAt n xs) : chunks n (tail xs)
   | otherwise      = []
 
-chks = [chunks x str | x &lt;- [7,6..1]]
+chks = [chunks n str | n <- [7,6..1]]
 
 main = do
   mapM_ print chks
-</code></pre>
+```
 
-<p>Running the program gives</p>
+Now
 
-<pre><code>$ runhaskell chunks-001.hs 
+```
+chks ⇒ 
 ["sinus a","inus ae","nus aes","us aest","s aestu"," aestuu","aestuum"]
 ["sinus ","inus a","nus ae","us aes","s aest"," aestu","aestuu","estuum"]
 ["sinus","inus ","nus a","us ae","s aes"," aest","aestu","estuu","stuum"]
@@ -29,4 +30,5 @@ main = do
 ["sin","inu","nus","us ","s a"," ae","aes","est","stu","tuu","uum"]
 ["si","in","nu","us","s "," a","ae","es","st","tu","uu","um"]
 ["s","i","n","u","s"," ","a","e","s","t","u","u","m"]
-</code></pre>
+```
+

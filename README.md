@@ -1,6 +1,8 @@
 # dit-doo
 Given the last six letters of text, what will the next one be?
 
+There is a [making-of](making-of.md)
+
 ```
 $ runhaskell dit-doo-cks-012.hs 
 A JOURNEY TO THE CENTRE OF THE EARTH
