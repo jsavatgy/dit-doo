@@ -8,21 +8,21 @@ Lets first collect all the chunks of length `[7,6..1]` from a given text.
 
 ```haskell
 str = "sinus aestuum"
+ns = [7,6..1]
 
 chunks n xs 
   | n <= length xs = fst (splitAt n xs) : chunks n (tail xs)
   | otherwise      = []
 
-chks = [chunks n str | n <- [7,6..1]]
-
-main = do
-  mapM_ print chks
+chks = [chunks x str | x <- ns]
 ```
 
 Now
 
 ```haskell
-chks ⇒ 
+> str
+"sinus aestuum"
+> mapM_ (putStrLn . show) chks
 ["sinus a","inus ae","nus aes","us aest","s aestu"," aestuu","aestuum"]
 ["sinus ","inus a","nus ae","us aes","s aest"," aestu","aestuu","estuum"]
 ["sinus","inus ","nus a","us ae","s aes"," aest","aestu","estuu","stuum"]
