@@ -1,6 +1,6 @@
 # dit-doo
 
-Given the last six letters of text, what will the next one be?
+A given text gives us the probabilities of letters to appear. Given the last six letters, what will the next one be?
 
 ## Collecting chunks
 
