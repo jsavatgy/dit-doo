@@ -1,8 +1,0 @@
-#!/bin/bash
-
-echo "<meta charset=\"utf-8\">" >preview.html
-markdown making-of.md >>preview.html
-firefox preview.html > /dev/null 2>&1 &
-# rm preview.html
-
-

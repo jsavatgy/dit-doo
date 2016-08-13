@@ -11,6 +11,6 @@ chks = [chunks x str | x <- ns]
 main = do
   putStrLn "str = "
   print str
-  putStrLn "(chks str) = "
+  putStrLn "chks = "
   mapM_ (putStrLn . show) chks
 
