@@ -59,7 +59,111 @@ The same works quite well when reading the text from a file.
 [('\n',5234),('\r',5234),(' ',83311),('!',365),('"',2648),('\'',166),('(',15),(')',15),('*',15),('+',1),(',',6678),('-',1180),('.',4881),('/',35),('0',15),('1',46),('2',37),('3',28),('4',20),('5',14),('6',13),('7',10),('8',13),('9',11),(':',49),(';',411),('<',70),('>',70),('?',443),('A',712),('B',298),('C',179),('D',145),('E',295),('F',147),('G',132),('H',723),('I',2649),('J',41),('K',33),('L',135),('M',387),('N',293),('O',227),('P',318),('Q',16),('R',172),('S',410),('T',1071),('U',84),('V',41),('W',613),('X',1),('Y',146),('Z',2),('[',16),(']',16),('a',29744),('b',4992),('c',10664),('d',15785),('e',48156),('f',9337),('g',6918),('h',20639),('i',22996),('j',353),('k',2609),('l',15644),('m',9357),('n',25238),('o',28939),('p',6301),('q',348),('r',22354),('s',23226),('t',33047),('u',11846),('v',3947),('w',8721),('x',821),('y',7594),('z',209),('\163',1),('\65279',1)]
 ```
 
-## What's next?
+## Random letters
+
+Next we generate random numbers by the functions found in module `System.Random`, thus we must first import the module.
+
+```haskell
+import System.Random
+```
+
+We decide to produce an endless list of random values between `0.0` and `1.0` of type `Double` and later scale the values to match the needed interval. During testing we may want to always produce the same sequence of numbers. This would be done by initializing the standard random generator to a specified value (like `42` in our out-commented example).
+
+```haskell
+rands :: IO [Double]
+rands = do
+  -- setStdGen (mkStdGen 42)
+  g <- getStdGen
+  let rs = randomRs (0.0,1.0) g 
+  return rs
+```
+
+Now we get
+
+```haskell
+> rs <- rands
+> let t = take 8 rs
+> import Text.Printf
+> mapM_ (putStrLn . (printf "%.5f")) t
+0.39657
+0.06528
+0.12848
+0.27719
+0.10342
+0.14214
+0.96264
+0.77976
+```
+
+To choose a random letter from a string, we need a random integer. For this, we `scale` and `floor` our list of floating point numbers. Normally the random numbers will be between `0.00` and `0.99`, but occasionally there can be an `1.00`. That number would `floor` differently, so we take care of it by always minimizing the result to be no bigger than the integer `i`.
+
+```haskell
+scale :: Int -> Double -> Int
+scale i r = min i t
+  where
+    itd = intToDouble i
+    t = floor (r*(itd+1))
+```
+
+We do the conversion from `Int` to `Double` via the type `Rational`. The function `fromRational` gets its return type from the type declaration of the function `intToDouble`. 
+
+```haskell
+intToDouble :: Int -> Double
+intToDouble = fromRational . toRational
+```
+
+The function works as expected.
+
+```haskell
+> intToDouble 48
+48.0
+```
+
+Let the string be
+
+```haskell
+str = " aieou nstlr"
+```
+
+Our function `randomString` takes as its parameters the list of random numbers, the string, and the amount of resulting characters we want.
+
+```haskell
+randomString rnds str n = map (str !!) r
+  where
+    rr = take n rnds
+    l = length str-1
+    r = map (scale l) rr
+```
+
+Let's scale the earlier chosen `8` random numbers to the integer interval from `0` to `11`.
+
+```haskell
+> str
+" aieou nstlr"
+> let l = length str-1
+> l
+11
+> let r = map (scale l) t
+> r
+[4,0,1,3,1,1,11,9]
+```
+
+Mapping them over the string `str` they become
+
+```haskell
+>  map (str !!) r
+"o aeaart"
+```
+
+Taking `540` of them is no problem.
+
+```haskell
+> randomString rs str 540
+"o aeaarttria eeo o aeaorelutolusi oin sanntinorlir nraiaauss isareal utitieoanlesle  salrnarel lnsstut onos s e tneorstsat irassore ontul o etu a rlneta llaanreo  reutn eu roertsto  eirrnitlersse atasnnnt usi usniles su aa  ttsoonnriooluasuoart uauneuaaoustasrn u una nealuasor esaotua an iatasl  s un   aetreliselrisaetn iotlta sr su otnaat n urnesl   trrnirul su tnine nnaneio  r  isulss  seeua t  rrso ntau lesno a nntt u tooarrisisslsnn natoilo   rarsit sueeiaueseeoiolisuunu rlsurnn otaoeooelae nn  r oittsis ns ou el srnuleiutnlnre  t"
+```
+
+
+## About being predictive?
 
 
 ```haskell
