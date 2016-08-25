@@ -162,8 +162,71 @@ Taking `540` of them is no problem.
 "o aeaarttria eeo o aeaorelutolusi oin sanntinorlir nraiaauss isareal utitieoanlesle  salrnarel lnsstut onos s e tneorstsat irassore ontul o etu a rlneta llaanreo  reutn eu roertsto  eirrnitlersse atasnnnt usi usniles su aa  ttsoonnriooluasuoart uauneuaaoustasrn u una nealuasor esaotua an iatasl  s un   aetreliselrisaetn iotlta sr su otnaat n urnesl   trrnirul su tnine nnaneio  r  isulss  seeua t  rrso ntau lesno a nntt u tooarrisisslsnn natoilo   rarsit sueeiaueseeoiolisuunu rlsurnn otaoeooelae nn  r oittsis ns ou el srnuleiutnlnre  t"
 ```
 
+## Building a map
 
-## About being predictive?
+We import the module `Data.Map` and use the prefix `Map.` for its functions to avoid conflicts with `Prelude`.
+
+```haskell
+import qualified Data.Map as Map
+```
+
+We flatten a list of lists to a list with the function `concat`.
+
+```haskell
+> concat [[1,2],[3,4]]
+[1,2,3,4]
+```
+
+Here we do it for our `chunks`.
+
+```haskell
+chks str = concat [chunks x str | x <- ns]
+```
+
+We split a chunk into root and extension. 
+
+```haskell
+> let s = "umorum"
+> let (root,ext) = (init s, [last s])
+> root
+"umoru"
+> ext
+"m"
+```
+
+The root becomes the key in our map. 
+
+```haskell
+roots chks = 
+  Map.fromListWith tac t
+  where 
+    t = [(init s, [last s]) | s <- chks]
+```
+
+With the function `tac` we form the value corresponding a key. For now, we simply collect the extensions as a list.
+
+```haskell
+tac a b = b ++ a
+```
+
+From the string `str` we get the map. When the root is empty, the value becomes a list of all the letters. When the key is `"a"`, the value becomes the list `"rn"`, because those are the letters following the string `"a"` in the string `"mare anguis"`.
+
+```haskell
+> str
+"mare anguis"
+> roots (chks str)
+fromList [("","mare anguis"),(" ","a"),(" a","n"),(" an","g"),(" ang","u"),(" angu","i"),(" angui","s"),("a","rn"),("an","g"),("ang","u"),("angu","i"),("angui","s"),("ar","e"),("are"," "),("are ","a"),("are a","n"),("are an","g"),("e"," "),("e ","a"),("e a","n"),("e an","g"),("e ang","u"),("e angu","i"),("g","u"),("gu","i"),("gui","s"),("i","s"),("m","a"),("ma","r"),("mar","e"),("mare"," "),("mare ","a"),("mare a","n"),("n","g"),("ng","u"),("ngu","i"),("ngui","s"),("r","e"),("re"," "),("re ","a"),("re a","n"),("re an","g"),("re ang","u"),("u","i"),("ui","s")]
+```
+
+We could do a simple lookup to find out what comes after `"ng"`.
+
+```haskell
+> let r = roots (chks str)
+> Map.lookup "ng" r
+Just "u"
+```
+
+## Next step
 
 
 ```haskell
