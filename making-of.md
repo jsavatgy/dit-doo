@@ -267,7 +267,7 @@ treeV r = Map.showTreeWith (\k x -> show (k,x)) True False r
 
 Used with the function `putStrLn` it outputs the tree structure.
 
-```haskell
+```
 > putStrLn (treeV r)
 ("la",fromList [('c',1)])
 +--("acu",fromList [('s',1)])
