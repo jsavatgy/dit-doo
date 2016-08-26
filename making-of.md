@@ -226,6 +226,64 @@ We could do a simple lookup to find out what comes after `"ng"`.
 Just "u"
 ```
 
+## Singleton and rootmap
+
+We want to build a nested tree from our structure. We get an element, say, `("a",1)`, then `("b",2)`, then `("c",3)`. We know the function `union` from the module `Map`, which combines two trees together. Thus we need to make a tree out of our element. This is done by the function `singleton`. It forms a single-leaf tree out of one element. These single-element trees can be combined by the function `union`. 
+
+```haskell
+> let s1 = Map.singleton "a" 1
+> let s2 = Map.singleton "b" 2
+> let s3 = Map.singleton "c" 3
+> let u1 = s1 `Map.union` s2 `Map.union` s3
+> u1
+fromList [("a",1),("b",2),("c",3)]
+> :type u1
+u1 :: Num a => Map.Map [Char] a
+```
+
+To collect a frequency tree, we use the function `unionWith (+)`.
+
+```haskell
+rootmap str = 
+  Map.fromListWith (Map.unionWith (+)) t
+  where 
+    t = [(init s, Map.singleton (last s) 1) | s <- chks str]
+    chks str = concat [chunks x str | x <- ns]
+```
+
+Now
+
+```haskell
+> let r = rootmap "lacus"
+> r
+fromList [("",fromList [('a',1),('c',1),('l',1),('s',1),('u',1)]),("a",fromList [('c',1)]),("ac",fromList [('u',1)]),("acu",fromList [('s',1)]),("c",fromList [('u',1)]),("cu",fromList [('s',1)]),("l",fromList [('a',1)]),("la",fromList [('c',1)]),("lac",fromList [('u',1)]),("lacu",fromList [('s',1)]),("u",fromList [('s',1)])]
+```
+
+The functions `showTree` and `showTreeWith` return the hierarchical view to our tree. For this we define the function `treeV`.
+
+```haskell
+treeV r = Map.showTreeWith (\k x -> show (k,x)) True False r
+```
+
+Used with the function `putStrLn` it outputs the tree structure.
+
+```haskell
+> putStrLn (treeV r)
+("la",fromList [('c',1)])
++--("acu",fromList [('s',1)])
+|  +--("a",fromList [('c',1)])
+|  |  +--("",fromList [('a',1),('c',1),('l',1),('s',1),('u',1)])
+|  |  +--("ac",fromList [('u',1)])
+|  +--("cu",fromList [('s',1)])
+|     +--("c",fromList [('u',1)])
+|     +--("l",fromList [('a',1)])
++--("lacu",fromList [('s',1)])
+   +--("lac",fromList [('u',1)])
+   +--("u",fromList [('s',1)])
+```
+
+Here the value `fromList` tells us we have a nested map.
+
 ## Next step
 
 
