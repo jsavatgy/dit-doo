@@ -284,6 +284,56 @@ Used with the function `putStrLn` it outputs the tree structure.
 
 Here the value `fromList` tells us we have a nested map.
 
+
+## Logarithmic randomness
+
+We want some randomness in our program. If the length of `accum` is `6`, a good random distribution returns usually all the letters, but in some moments less. We get a nice distribution in logarithmic scale.
+
+We define a function `floorLogBase` to do this.
+
+```haskell
+floorLogBase = floor . logBase 0.5
+```
+
+Given 100 numbers evenly distributed from interval `[0.00,0.01..1.00]`, the function `floorLogBase` returns a logarithmic distribution.
+
+```haskell
+"6655444333333222222222222111111111111111111111111100000000000000000000000000000000000000000000000000"
+```
+
+Our function `randLts` would look like
+
+```haskell
+randLts rands n = take n r3s
+  where
+    r3s = concat (map show r2s)
+    r2s = map (truncBetween 0 6) r1s
+    r1s = map floorLogBase rands
+```
+
+We truncate the numbers to be between `a` and `b` by the function `truncBetween`.
+
+
+```haskell
+truncBetween a b x = a `max` x `min` b
+```
+
+We get a truncated list.
+
+```haskell
+> map (truncBetween 1 6) [0..10]
+[1,1,2,3,4,5,6,6,6,6,6]
+```
+
+And now we get 540 random numbers between 1 and 6 distributed logarithmically.
+
+```haskell
+> rs <- rands
+> let r1 = randLts rs 540
+> print r1
+"001100122000322111020021000003011001013113004112014103000000410601000000010101010420300021123011111011310000040131100000321030100120014121502023020400010012032130443000000020040006111030001003000132000304200212112002001022101003002001010001201010100112001004202001100002322202331110000000221106016202040001024010000010020001110131001010000020003212342021001212001011100020102002103036020010130103203110113002211110300401411000000004010000040101102006010002210000002100020133140010000000002140212222116150011010411034030323010100010211136101"
+```
+
 ## Next step
 
 
