@@ -1,6 +1,5 @@
 import qualified Data.Map as Map
 
-fileName = "journey-to-centre-of-earth.txt"
 ns = [7,6..1]
 
 chunks n xs 
@@ -13,19 +12,25 @@ rootmap str =
     t = [(init s, Map.singleton (last s) 1) | s <- chks str]
     chks str = concat [chunks x str | x <- ns]
 
-tests = chunks 3 "pqrs"
-partOfContent = take 10000
-testLookup str = map (\s -> Map.lookup s (rootmap str)) tests
+fsum a b = (a + b, (a+1,a+b))
+
 treeV r = Map.showTreeWith (\k x -> show (k,x)) True False r
+
+filterMe (d,m) c = Map.filter (\(a,b) -> a<=c && c<=b) m
 
 main = do
   putStrLn "rootmap = "
-  let r = rootmap "lacus odii"
+  let r = rootmap "mare imbrium"
   print r
   putStrLn "treeV = "
   putStrLn (treeV r)
-  putStrLn "tst = "
-  content <- readFile fileName
-  let tst = testLookup (partOfContent content)
-  print tst
+  let lu = r Map.! ""
+  putStrLn "lu = "
+  print lu
+  let ma = Map.mapAccum fsum 0 lu
+  putStrLn "ma = "
+  print ma
+  let fm = map (Map.keys . filterMe ma) [1..15]
+  putStrLn "fm = "
+  print fm
 

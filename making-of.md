@@ -267,7 +267,7 @@ treeV r = Map.showTreeWith (\k x -> show (k,x)) True False r
 
 Used with the function `putStrLn` it outputs the tree structure.
 
-```
+```haskell
 > putStrLn (treeV r)
 ("la",fromList [('c',1)])
 +--("acu",fromList [('s',1)])
@@ -333,6 +333,36 @@ And now we get 540 random numbers between 1 and 6 distributed logarithmically.
 > print r1
 "001100122000322111020021000003011001013113004112014103000000410601000000010101010420300021123011111011310000040131100000321030100120014121502023020400010012032130443000000020040006111030001003000132000304200212112002001022101003002001010001201010100112001004202001100002322202331110000000221106016202040001024010000010020001110131001010000020003212342021001212001011100020102002103036020010130103203110113002211110300401411000000004010000040101102006010002210000002100020133140010000000002140212222116150011010411034030323010100010211136101"
 ```
+
+## A letter from a leaf
+
+Let `ea1` be the leaf we want to study.
+
+```haskell
+> let ea1 = Map.fromList [(' ',1),('a',1),('b',1),('e',1),('i',2),('m',3),('r',2),('u',1)]
+```
+
+We want to know how many letters are there in this leaf. We can use the function `mapAccum` for this. Not only does it give the amount of letters, but it enables us to construct an interval, which we will use to match our random number later and choose the letter accordingly.
+
+```haskell
+mapAccumFsum = Map.mapAccum fsum 0 
+  where
+    fsum a b = (a + b, (a+1,a+b))
+```
+
+For our leaf `ea1` this gives
+
+```haskell
+> mapAccumFsum ea1
+(12,fromList [(' ',(1,1)),('a',(2,2)),('b',(3,3)),('e',(4,4)),('i',(5,6)),('m',(7,9)),('r',(10,11)),('u',(12,12))])
+```
+
+We now know that there are 12 letters in this leaf. We construct a random number between 1 and 12, and get the letter by matching the intervals. We can define a function `filterMe` for this.
+
+```haskell
+filterMe (d,m) c = Map.filter (\(a,b) -> a<=c && c<=b) m
+```
+
 
 ## Next step
 
