@@ -363,6 +363,79 @@ We now know that there are 12 letters in this leaf. We construct a random number
 filterMe (d,m) c = Map.filter (\(a,b) -> a<=c && c<=b) m
 ```
 
+## Dropping letters
+
+We try to find the six-letter string `accum`. If we don't find it, we drop one letter from beginning and try again. In the worst case we are left with empty string `""`, which always matches.
+
+```haskell
+randAccum rmap (x,out) = findAccum rmap (drop out x)
+findAccum rmap x = lookAccum rmap (Map.lookup x rmap) x
+lookAccum rmap (Just x) str = (str,x)
+lookAccum rmap Nothing  str = lookAccum rmap (Map.lookup next rmap) next
+  where
+    next = drop 1 str
+```
+
+We test the lookup.
+
+```haskell
+> let example = "lacus veris"
+> let rmap = rootmap example
+> let examples = chunks 6 example
+> let l1 = map (findAccum rmap) examples
+> mapM_ (putStrLn . show) l1
+("lacus ",fromList [('v',1)])
+("acus v",fromList [('e',1)])
+("cus ve",fromList [('r',1)])
+("us ver",fromList [('i',1)])
+("s veri",fromList [('s',1)])
+("s",fromList [(' ',1)])
+```
+
+Using the random numbers, we drop some letters. With short example string this should not affect the results. 
+
+```haskell
+> rs <- rands
+> let rl = randLts rs
+> let l2 = map (randAccum rmap) (zip examples rl)
+> mapM_ (putStrLn . show) l2
+("us ",fromList [('v',1)])
+("v",fromList [('e',1)])
+("cus ve",fromList [('r',1)])
+("s ver",fromList [('i',1)])
+(" veri",fromList [('s',1)])
+("s",fromList [(' ',1)])
+```
+
+We define a small function `countTest` to test calculations.
+
+```haskell
+countTest content = map (\(a,b) -> (a, fst (mapAccumFsum b))) l1
+  where
+    l1 = map (findAccum rmap) tests
+    tests = chunks 4 "matkustus maanx"
+    rmap = rootmap example
+    example = take 10000 content
+```
+
+Reading a text file and calling the function `countText` we get
+
+```haskell
+> content <- readFile "matkustus-maan-keskipisteeseen.txt"
+> mapM_ (putStrLn . show) (countTest content)
+("matk",1)
+("ku",51)
+("kus",5)
+("kust",2)
+("stu",10)
+("stus",1)
+("us ",9)
+("us m",1)
+(" ma",14)
+(" maa",2)
+("maan",4)
+("",10000)
+```
 
 ## Next step
 
