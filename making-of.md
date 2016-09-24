@@ -437,6 +437,85 @@ Reading a text file and calling the function `countText` we get
 ("",10000)
 ```
 
+## Random length in action
+
+We again read the file to the variable `content`. We let the `accum` to be 6 letters from the beginning of that content.
+
+```haskell
+> content <- readFile "matkustus-maan-keskipisteeseen.txt"
+> let accum = take 6 content
+> accum
+"MATKUS"
+```
+
+We create an infinite list of random numbers by the function `rands` and give it the name `rs`. We count a logarithmic distribution from it.
+
+```haskell
+> rs <- rands
+> let rtls = randLengths rs
+> take 10 rtls
+[1,0,6,2,0,0,3,1,0,1]
+```
+
+This gives the random amount of letters to take off from `accum`: first 1 letter, then 0 letters, then 6 letters, and so on. We get the list `traccums`. We sort it by length and print the reversed result, that is, the longest string first. Like we expected, the logarithmic distribution gives about half of words with full length, half of the rest with one letter less, and so on. Each of them appears only once in the text, only the empty string matches the text for every letter, that is, 10000 times.
+
+```haskell
+> let traccums = accumTest content rtls accum
+> traccums
+[("ATKUS",1),("MATKUS",1),("",10000),("TKUS",1),("MATKUS",1),("MATKUS",1),("KUS",1),("ATKUS",1),("MATKUS",1),("ATKUS",1)]
+> let traccumsSorted = sortBy (comparing (\(x,y) -> length x)) traccums 
+> traccumsSorted
+[("",10000),("KUS",1),("TKUS",1),("ATKUS",1),("ATKUS",1),("ATKUS",1),("MATKUS",1),("MATKUS",1),("MATKUS",1),("MATKUS",1)]
+> mapM_ (putStrLn . show) (reverse traccumsSorted)
+("MATKUS",1)
+("MATKUS",1)
+("MATKUS",1)
+("MATKUS",1)
+("ATKUS",1)
+("ATKUS",1)
+("ATKUS",1)
+("TKUS",1)
+("KUS",1)
+("",10000)
+```
+
+## Random extension in action
+
+We define the functions `extTest` and `extTuple` to test the random extension and form a printable tuple from their results.
+
+```haskell
+extTuple accum tree rand = (accum, limit, scaledRand, ks)
+  where
+    ks = Map.keys (filterMe (limit,i) scaledRand)
+    (limit,i) = mapAccumFsum tree
+    scaledRand = (scale (limit-1) rand) + 1
+    
+extTest rands accum = map (\((a,b),c) -> extTuple a b c) l2
+  where
+    l2 = zip l1 rands
+    l1 = map (findAccum rmap) tests
+    tests = take 8 (repeat accum)
+    rmap = rootmap example
+    example = "odii"
+```
+
+We give an empty `accum` string `""` and test it for the example content string `"odii"`. The distribution of extensions is what we expected. In the resulting list of tuples first is the `accum`, how many possible extensions it has, then the random integer based on the amount of possibilities and last the corresponding letter. A search tree has its keys in alphabetic order.
+
+```haskell
+> let accum = ""
+> rs <- rands
+> let rexts = extTest rs accum
+> mapM_ (putStrLn . show) (sort rexts)
+("",4,1,"d")
+("",4,1,"d")
+("",4,2,"i")
+("",4,2,"i")
+("",4,3,"i")
+("",4,3,"i")
+("",4,3,"i")
+("",4,4,"o")
+```
+
 ## Next step
 
 
