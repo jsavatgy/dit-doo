@@ -516,6 +516,70 @@ We give an empty `accum` string `""` and test it for the example content string 
 ("",4,4,"o")
 ```
 
+## First test drive
+
+We are now ready to test the output. First we redefine the function `extTuple`.
+
+
+```haskell
+extTuple tree rndout rand accum = ((accum, l, rndout, limit, scaledRand), ks)
+  where
+    l = length accum
+    ks = Map.keys (filterMe (limit,i) scaledRand)
+    (limit,i) = mapAccumFsum tree
+    scaledRand = (scale (limit-1) rand) + 1
+```
+
+In the main function we produce the random numbers and read the file. We then select an excerpt from the text and form a search tree `rmap` from the chunks it contains. We let the `accum` to be first 6 letters from the excerpt. With a call to the function `genAccum` we start a recursion to collect the following results.
+
+
+```haskell
+main = do
+  rs <- rands
+  content <- readFile "journey-to-centre-of-earth.txt"
+  let 
+    example = take 10000 content
+    rmap = rootmap example
+    accum = take accumLen example
+    accums = genAccum rmap rs accum
+  mapM_ (putStrLn . show) (take 12 accums)
+```
+
+The function `genAccum` contains the endless recursion. But because we say we this time only need 12 examples from the beginning, Haskell understands it and ends the recursion there.
+
+At each step the function uses 2 random digits (`rands!!0` and `rands!!1`) from the endless list of digits. The first one goes to cut the `accum` and the second gets scaled according to the amount of possible extensions as we saw in the function `extTuple`.
+
+
+```haskell
+genAccum rmap rands accum = 
+  accTuple : genAccum rmap newRands newAccum
+  where
+    newRands = drop 2 rands
+    newAccum = lastN accumLen (accum ++ c)
+    (_,c) = accTuple
+    rndout = randLength (rands!!0)
+    (accu,tree) = randAccum rmap accum rndout
+    accTuple = extTuple tree rndout (rands!!1) accu
+```
+
+Now the program outputs
+
+```haskell
+((" JOUR",5,1,1,1),"N")
+((" JOURN",6,0,1,1),"E")
+(("OURNE",5,1,1,1),"Y")
+(("URNEY",5,1,1,1)," ")
+(("URNEY ",6,0,1,1),"T")
+(("RNEY T",6,0,1,1),"O")
+(("NEY TO",6,0,1,1)," ")
+(("EY TO ",6,0,1,1),"T")
+(("T",1,5,23,21),"o")
+((" To",3,0,5,3)," ")
+((" To ",4,0,5,4),"p")
+(("o p",3,3,2,1),"o")
+```
+
+
 ## Next step
 
 
