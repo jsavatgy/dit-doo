@@ -32,6 +32,8 @@ Now
 ["s","i","n","u","s"," ","a","e","s","t","u","u","m"]
 ```
 
+The Haskell-code until now: [chunks.hs](/code/chunks.hs)
+
 ## Calculating frequency
 
 Using a list comprehension we get a list of tuples.
@@ -58,6 +60,8 @@ The same works quite well when reading the text from a file.
 > frequency content
 [('\n',5234),('\r',5234),(' ',83311),('!',365),('"',2648),('\'',166),('(',15),(')',15),('*',15),('+',1),(',',6678),('-',1180),('.',4881),('/',35),('0',15),('1',46),('2',37),('3',28),('4',20),('5',14),('6',13),('7',10),('8',13),('9',11),(':',49),(';',411),('<',70),('>',70),('?',443),('A',712),('B',298),('C',179),('D',145),('E',295),('F',147),('G',132),('H',723),('I',2649),('J',41),('K',33),('L',135),('M',387),('N',293),('O',227),('P',318),('Q',16),('R',172),('S',410),('T',1071),('U',84),('V',41),('W',613),('X',1),('Y',146),('Z',2),('[',16),(']',16),('a',29744),('b',4992),('c',10664),('d',15785),('e',48156),('f',9337),('g',6918),('h',20639),('i',22996),('j',353),('k',2609),('l',15644),('m',9357),('n',25238),('o',28939),('p',6301),('q',348),('r',22354),('s',23226),('t',33047),('u',11846),('v',3947),('w',8721),('x',821),('y',7594),('z',209),('\163',1),('\65279',1)]
 ```
+
+The code: [frequency.hs](/code/frequency.hs)
 
 ## Random letters
 
@@ -162,6 +166,8 @@ Taking `540` of them is no problem.
 "o aeaarttria eeo o aeaorelutolusi oin sanntinorlir nraiaauss isareal utitieoanlesle  salrnarel lnsstut onos s e tneorstsat irassore ontul o etu a rlneta llaanreo  reutn eu roertsto  eirrnitlersse atasnnnt usi usniles su aa  ttsoonnriooluasuoart uauneuaaoustasrn u una nealuasor esaotua an iatasl  s un   aetreliselrisaetn iotlta sr su otnaat n urnesl   trrnirul su tnine nnaneio  r  isulss  seeua t  rrso ntau lesno a nntt u tooarrisisslsnn natoilo   rarsit sueeiaueseeoiolisuunu rlsurnn otaoeooelae nn  r oittsis ns ou el srnuleiutnlnre  t"
 ```
 
+The code: [random-01.hs](/code/random-01.hs)
+
 ## Building a map
 
 We import the module `Data.Map` and use the prefix `Map.` for its functions to avoid conflicts with `Prelude`.
@@ -226,6 +232,8 @@ We could do a simple lookup to find out what comes after `"ng"`.
 Just "u"
 ```
 
+The code: [roots-01.hs](/code/roots-01.hs)
+
 ## Singleton and rootmap
 
 We want to build a nested tree from our structure. We get an element, say, `("a",1)`, then `("b",2)`, then `("c",3)`. We know the function `union` from the module `Map`, which combines two trees together. Thus we need to make a tree out of our element. This is done by the function `singleton`. It forms a single-leaf tree out of one element. These single-element trees can be combined by the function `union`. 
@@ -284,6 +292,7 @@ Used with the function `putStrLn` it outputs the tree structure.
 
 Here the value `fromList` tells us we have a nested map.
 
+The code until now: [maprandom-01.hs](/code/maprandom-01.hs)
 
 ## Logarithmic randomness
 
@@ -334,6 +343,9 @@ And now we get 540 random numbers between 1 and 6 distributed logarithmically.
 "001100122000322111020021000003011001013113004112014103000000410601000000010101010420300021123011111011310000040131100000321030100120014121502023020400010012032130443000000020040006111030001003000132000304200212112002001022101003002001010001201010100112001004202001100002322202331110000000221106016202040001024010000010020001110131001010000020003212342021001212001011100020102002103036020010130103203110113002211110300401411000000004010000040101102006010002210000002100020133140010000000002140212222116150011010411034030323010100010211136101"
 ```
 
+The code: [random-02.hs](/code/random-02.hs)
+
+
 ## A letter from a leaf
 
 Let `ea1` be the leaf we want to study.
@@ -362,6 +374,9 @@ We now know that there are 12 letters in this leaf. We construct a random number
 ```haskell
 filterMe (d,m) c = Map.filter (\(a,b) -> a<=c && c<=b) m
 ```
+
+The code: [fold-map-02.hs](/code/fold-map-02.hs)
+
 
 ## Dropping letters
 
@@ -437,6 +452,8 @@ Reading a text file and calling the function `countText` we get
 ("",10000)
 ```
 
+The code until now: [look-accum-02.hs](/code/look-accum-02.hs)
+
 ## Random length in action
 
 We again read the file to the variable `content`. We let the `accum` to be 6 letters from the beginning of that content.
@@ -479,9 +496,7 @@ This gives the random amount of letters to take off from `accum`: first 1 letter
 ("",10000)
 ```
 
-The code: [accum-start-01.hs](../code/accum-start-01.hs)
-
-
+The code: [accum-start-01.hs](/code/accum-start-01.hs)
 
 ## Random extension in action
 
