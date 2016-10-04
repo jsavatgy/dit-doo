@@ -479,6 +479,10 @@ This gives the random amount of letters to take off from `accum`: first 1 letter
 ("",10000)
 ```
 
+The code: [accum-start-01.hs](../code/accum-start-01.hs)
+
+
+
 ## Random extension in action
 
 We define the functions `extTest` and `extTuple` to test the random extension and form a printable tuple from their results.
@@ -515,6 +519,8 @@ We give an empty `accum` string `""` and test it for the example content string 
 ("",4,3,"i")
 ("",4,4,"o")
 ```
+
+The code: [accum-end-02.hs](../code/accum-end-02.hs)
 
 ## First test drive
 
@@ -579,23 +585,70 @@ Now the program outputs
 (("o p",3,3,2,1),"o")
 ```
 
+The code: [first-debug.hs](../code/first-debug.hs)
 
-## Next step
+## Now the output
+
+Now we finally get some output. We rename the recursive call as the function `generate`. It ads the letter `c`, which is of type `String`, that is `[Char]` using the list concatenating operation `++`, to the recursive list of continuing letters.
+
+```haskell
+generate rmap rands accum = 
+  c ++ generate rmap newRands newAccum
+  where
+    newRands = drop 2 rands
+    newAccum = lastN 6 (accum ++ c)
+    rndout = randLength (rands!!0)
+    (accu,tree) = randAccum rmap accum rndout
+    c =  newLetter tree rndout (rands!!1) accu
+```
+
+The function `extTuple` becomes the function `newLetter`, and just returns the corresponding letter `ks`.
 
 
 ```haskell
-
+newLetter tree rndout rand accum = ks
+  where
+    ks = Map.keys (filterMe (limit,i) scaledRand)
+    (limit,i) = mapAccumFsum tree
+    scaledRand = (scale (limit-1) rand) + 1
 ```
 
-
+The function `main` is equally simple.
 
 ```haskell
-
+main = do
+  rs <- rands
+  content <- readFile "journey-to-centre-of-earth.txt"
+  let 
+    example = take 10000 content
+    rmap = rootmap example
+    accum = take 6 example
+    accums = generate rmap rs accum
+    output = accum ++ take 5000 accums
+  putStrLn output
 ```
 
+The output of the program now looks like
 
+```text
+A JOURNEY TO THE EARTH
 
-```haskell
+By Juleson, and state that then declare the earned pund the solemnly 
+declared to himself, "it of stone, "arently oblivious of the pebbles--
+old, to a certairs, ventures who reigned in which my uncle wished to 
+display OURNEY TO THE CENTRE OF THE EARTH
 
+Now as I did--which great, I most extraordinary fashioned pull.
+
+Steel rods, there us than soda, an omelette more interview.
+
+He received me in his here tremulous many others, and unique works.
+
+Anothereby impatience; to be a loadstones, glass pipes mants.
+
+"Harry--Harry--"
+...
 ```
+
+The Haskell-code until now: [snd-debug-01.hs](../code/snd-debug-01.hs)
 
