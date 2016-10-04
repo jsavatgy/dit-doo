@@ -520,7 +520,7 @@ We give an empty `accum` string `""` and test it for the example content string 
 ("",4,4,"o")
 ```
 
-The code: [accum-end-02.hs](../code/accum-end-02.hs)
+The code: [accum-end-02.hs](/code/accum-end-02.hs)
 
 ## First test drive
 
@@ -585,7 +585,7 @@ Now the program outputs
 (("o p",3,3,2,1),"o")
 ```
 
-The code: [first-debug.hs](../code/first-debug.hs)
+The code: [first-debug.hs](/code/first-debug.hs)
 
 ## Now the output
 
@@ -650,5 +650,5 @@ Anothereby impatience; to be a loadstones, glass pipes mants.
 ...
 ```
 
-The Haskell-code until now: [snd-debug-01.hs](../code/snd-debug-01.hs)
+The Haskell-code until now: [snd-debug-01.hs](/code/snd-debug-01.hs)
 
